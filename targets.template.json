@@ -1,0 +1,10 @@
+[
+    {
+        "hostname": "www1.example.com",
+        "port": 443
+    },
+    {
+        "hostname": "www2.example.com",
+        "port": 443
+    }
+]
