@@ -1,0 +1,20 @@
+{
+    "linterOptions": {
+        "exclude": [
+            "*.js",
+            "node_modules/**/*.ts"
+        ]
+    },
+    "lintOptions": {
+        "typeCheck": true
+    },
+    "extends": [
+        "tslint-plugin-prettier"
+    ],
+    "rulesDirectory": [
+        "tslint-plugin-prettier"
+    ],
+    "rules": {
+        "prettier": [true, "./.prettierrc.json", { "editorconfig": false }]
+    }
+}
