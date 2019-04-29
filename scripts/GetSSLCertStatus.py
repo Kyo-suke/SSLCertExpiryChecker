@@ -28,6 +28,7 @@ except Exception as e:
 #----------------------------------------------------------------
 # global config
 #----------------------------------------------------------------
+__VERSION__ = "1.0.0"
 BASH = "/usr/bin/bash"
 GET_SSL_CERT_EXPIRY = "GetSSLCertExpiry.sh"
 
@@ -93,23 +94,27 @@ class ResponseJson(object):
 
     @classmethod
     def _get_template(cls):
+        global __VERSION__
         _json = {
             "status": None,
             "statusCode": None,
             "results": [],
             "expiryAlertTerm": None,
             "timestamp": None,
-            "message": ""
+            "message": "",
+            "version": __VERSION__
         }
         return _json
 
     def _update_entity(self):
+        global __VERSION__
         self._entity["status"] = self._status
         self._entity["statusCode"] = self._status_code
         self._entity["results"] = self._results
         self._entity["expiryAlertTerm"] = self._expiry_alert_term
         self._entity["timestamp"] = self._timestamp
         self._entity["message"] = self._message
+        self._entity["version"] = __VERSION__
         return
 
     def get_string(self):
