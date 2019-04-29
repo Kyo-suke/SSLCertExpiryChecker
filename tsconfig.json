@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "none",
+        "outFile": "./js/main.js",
+        "charset": "utf-8",
+        "newLine": "lf",
+        "removeComments": true,
+        "emitBOM": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noImplicitAny": true,
+        "noEmitOnError": true,
+        "lib": [
+            "dom",
+            "es5"
+        ]
+    },
+    "include": [
+        "./src/ts/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
