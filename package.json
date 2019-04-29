@@ -1,0 +1,43 @@
+{
+  "name": "ssl-cert-expiry-checker",
+  "version": "1.0.0",
+  "description": "tool for checking SSL certification file expiry.",
+  "main": "index.html",
+  "scripts": {
+    "build": "npm-run-all lint:scss build:css lint:ts build:js",
+    "release": "npm-run-all lint:scss release:css lint:ts release:js minify:js concat:copyright:css",
+    "build:js": "tsc --sourceMap true --project ./tsconfig.json",
+    "release:js": "tsc --sourceMap false --project ./tsconfig.json",
+    "lint:ts": "tslint --config ./tslint.json --project ./tsconfig.json",
+    "lint-fix:ts": "tslint --fix --config ./tslint.json --project ./tsconfig.json",
+    "minify:js": "google-closure-compiler --js ./js/main.js --js_output_file ./js/main.min.js --compilation_level SIMPLE",
+    "build:css": "node-sass ./src/sass/style.scss ./css/style.css --linefeed=lf --indent-width=4 --output-style=expanded --sourceMap=./css/ --verbose",
+    "release:css": "node-sass ./src/sass/style.scss ./css/style.min.css --linefeed=lf --indent-width=4 --output-style=compressed --verbose",
+    "lint:scss": "stylelint ./src/sass/*.scss --formatter string --config ./.stylelintrc.json",
+    "lint-fix:scss": "stylelint --fix ./src/sass/*.scss --formatter string --config ./.stylelintrc.json",
+    "concat:copyright:css": "concat -o ./css/style.min.css ./src/copyright.css.uncompress ./css/style.min.css"
+  },
+  "keywords": [],
+  "author": "k.chinen",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bootstrap-table": "^1.11.5",
+    "@types/datatables.net": "^1.10.17",
+    "@types/jquery": "^3.3.29",
+    "concat": "^1.0.3",
+    "cpx": "^1.5.0",
+    "google-closure-compiler": "^20190415.0.0",
+    "node-sass": "^4.12.0",
+    "npm-run-all": "^4.1.5",
+    "popper.js": "^1.15.0",
+    "prettier": "1.17.0",
+    "rimraf": "^2.6.3",
+    "stylelint": "10.0.1",
+    "stylelint-config-sass-guidelines": "6.0.0",
+    "stylelint-scss": "3.6.0",
+    "tslint": "5.16.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-plugin-prettier": "2.0.1",
+    "typescript": "^3.4.5"
+  }
+}
