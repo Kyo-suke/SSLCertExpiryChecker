@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>SSLCertExpiryChecker</title>
+    <link href="./css/style.css" rel="stylesheet">
+    <link href="./lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="./lib/datatables/datatables.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="./lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/popper/popper.min.js"></script>
+    <script type="text/javascript" src="./lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./lib/datatables/datatables.min.js"></script>
+
+    <script type="text/javascript" src="./js/main.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+    <h1>SSLCertExpiryChecker</h1>
+    <p>
+        SSL証明書の期限一覧を確認するツールです。
+    </p>
+    <table id="ssl-cert-status" class="table table-bordered" data-url="./GetSSLCertStatus.cgi" style="width: 100%;">
+        <thead class="thead-light">
+            <tr>
+                <th>ホスト名</th>
+                <th>証明書状態 <span data-toggle="tooltip" data-placement="right" data-html="true" title="<p>valid: 有効<br>warn: 有効期限切れが近い<br>expired: 期限切れ</p>">?</span></th>
+                <th>期限開始日</th>
+                <th>期限終了日</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div id="loading">
+        <p id="now-loading">読み込み中...</p>
+    </div>
+    </div>
+</body>
+</html>
