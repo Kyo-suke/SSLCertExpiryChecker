@@ -1,4 +1,6 @@
 declare namespace SSLCertChecker {
+    export type LineFeedCodeType = "cr" | "lf" | "crlf";
+
     export interface SSLCertStatus {
         hostname: string;
         status: "valid" | "warn" | "expired";

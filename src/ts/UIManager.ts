@@ -13,6 +13,7 @@ namespace SSLCertChecker {
     export class UIManager {
         private static TABLE_ID: string = "ssl-cert-status";
         private static LOADING_ID: string = "loading";
+        private static CSV_DOWNLOAD_BUTTON_ID: string = "csv-download-button";
 
         private static DATATABLES_JP = {
             sProcessing: "処理中...",
@@ -34,6 +35,14 @@ namespace SSLCertChecker {
 
         constructor() {
             throw new Error("Inqueryer is static class.");
+        }
+
+        public static initialize(): void {
+            jQuery("[data-toggle='tooltip'").tooltip();
+            jQuery("#" + this.CSV_DOWNLOAD_BUTTON_ID).on("click", ()=>{
+                CSVDownloader.download();
+            });
+            UIManager.initDataTables();
         }
 
         public static showLoading(showed: boolean): void {

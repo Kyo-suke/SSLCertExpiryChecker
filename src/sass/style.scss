@@ -6,6 +6,10 @@ body {
     padding: 1em;
 }
 
+p {
+    margin-bottom: 0.5em !important;
+}
+
 #wrapper {
     position: relative;
     box-sizing: border-box;
@@ -40,6 +44,11 @@ table#ssl-cert-status {
 
 h1 {
     border-bottom: 1px solid #333333;
+}
+
+button#csv-download-button {
+    padding: 0.25em;
+    margin-bottom: 0.5em;
 }
 
 div#loading {

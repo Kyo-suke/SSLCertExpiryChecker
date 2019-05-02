@@ -25,8 +25,7 @@ namespace SSLCertChecker {
      * DOMのロードが完了後に実行する
      */
     export function main(): void {
-        jQuery("[data-toggle='tooltip'").tooltip();
-        UIManager.initDataTables();
+        UIManager.initialize();
         Inqueryer.inquery(update);
     }
 
