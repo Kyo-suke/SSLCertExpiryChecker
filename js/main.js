@@ -293,13 +293,9 @@ var SSLCertChecker;
             }
             var filename = filenameBase;
             var date = new Date();
-            var d = [_paddingStr(date.getFullYear(), "0", 4),
-                _paddingStr(date.getMonth() + 1, "0", 2),
-                _paddingStr(date.getDate(), "0", 2)].join("");
+            var d = [_paddingStr(date.getFullYear(), "0", 4), _paddingStr(date.getMonth() + 1, "0", 2), _paddingStr(date.getDate(), "0", 2)].join("");
             filename = filename.replace("%d", d);
-            var t = [_paddingStr(date.getHours(), "0", 2),
-                _paddingStr(date.getMinutes(), "0", 2),
-                _paddingStr(date.getSeconds(), "0", 2)].join("");
+            var t = [_paddingStr(date.getHours(), "0", 2), _paddingStr(date.getMinutes(), "0", 2), _paddingStr(date.getSeconds(), "0", 2)].join("");
             filename = filename.replace("%t", t);
             return filename;
         };
