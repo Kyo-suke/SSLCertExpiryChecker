@@ -2,8 +2,6 @@
 /// <reference path="./Inqueryer.ts" />
 /// <reference path="./UIManager.ts" />
 /// <reference types="jquery" />
-/// <reference path="../d.ts/popper.d.ts" />
-/// <reference path="../d.ts/bootstrap.d.ts" />
 
 namespace SSLCertChecker {
     export var TARGET_CGI: string = "./GetSSLCertStatus.cgi";

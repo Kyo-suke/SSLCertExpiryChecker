@@ -1,8 +1,6 @@
 /// <reference path="../d.ts/common.d.ts" />
 /// <reference path="./Main.ts" />
 /// <reference types="jquery" />
-/// <reference path="../d.ts/popper.d.ts" />
-/// <reference path="../d.ts/bootstrap.d.ts" />
 
 namespace SSLCertChecker {
     /**
