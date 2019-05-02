@@ -1,4 +1,9 @@
 #!/usr/bin/bash
+#====================================================================
+# GetSSLCertExpiry.sh
+#====================================================================
+# GetSSLCertStatus.pyから利用される。
+#====================================================================
 set -eu
 
 # check openssl
@@ -24,7 +29,9 @@ function ssl_cert_start_date(){
     fi
 
     # output
-    echo -e "${SSL_CERT_START_STR}"
+    # string -> unix time
+    SSL_CERT_TIME=`date -d "${SSL_CERT_START_STR}" "+%s"`
+    echo -en "${SSL_CERT_TIME}"
     return 0
 }
 
@@ -41,7 +48,9 @@ function ssl_cert_end_date(){
     fi
 
     # output
-    echo -e "${SSL_CERT_END_STR}"
+    # string -> unix time
+    SSL_CERT_TIME=`date -d "${SSL_CERT_END_STR}" "+%s"`
+    echo -en "${SSL_CERT_TIME}"
     return 0
 }
 

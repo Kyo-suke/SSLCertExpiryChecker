@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+#====================================================================
+# GetSSLCertExpiry.py
+#====================================================================
+# SSL証明書期限を取得しJSONで返す。
+#====================================================================
 import os
 import sys
 import json
@@ -7,23 +12,6 @@ import datetime
 import threading
 import subprocess
 import traceback
-try:
-    import ssl
-except Exception as e:
-    # response error json
-    ret_json = {
-        "status": "ng",
-        "statusCode": 500,
-        "results": [],
-        "expiryAlertTerm": None,
-        "timestamp": int(time.time()),
-        "message": traceback.format_exc()
-    }
-    json_body = json.dumps(ret_json, ensure_ascii=False, sort_keys=True)
-    print("Content-Type: application/json")
-    print()
-    print(json_body)
-    sys.exit(1)
 
 #----------------------------------------------------------------
 # global config
@@ -285,8 +273,8 @@ class SSLCertStatus(object):
         """
         constructor
         @param {string} hostname taget hostname
-        @param {string} sdate Validity Not Before on SSL cert info
-        @param {string} edate Validity Not After on SSL cert info
+        @param {string} sdate Validity Not Before on SSL cert info (UTC time)
+        @param {string} edate Validity Not After on SSL cert info (UTC time)
         @param {integer} number of margin days
         """
         cls = SSLCertStatus
@@ -300,9 +288,9 @@ class SSLCertStatus(object):
     @classmethod
     def _get_date(cls, target):
         """
-        opensslコマンドで得た証明書日時文字列をdatetimeオブジェクトに変換する
+        opensslコマンドで得た証明書日時をdatetimeオブジェクトに変換する
         example: 
-        Feb 23 17:00:08 2019 GMT => datetime.datetime(2019, 2, 24, 2, 0, 8, ... , "JST")
+         => datetime.datetime(2019, 2, 24, 2, 0, 8, ... , "JST")
         @param {string} target 対象文字列
         @return {datetime}
         """
@@ -313,11 +301,12 @@ class SSLCertStatus(object):
             target = target.rstrip("\n")
 
             # SSL証明書の記述はグリニッジ標準時で記述される模様
-            # epoch timeはUTCからの経過時間の為、タイムゾーン情報が無い
+            # タイムゾーンを考慮すると大変なので一度UTC時間にして、
+            # その結果をdatetimeでローカルのタイムゾーンにあわせたものにする
             # datetimeオブジェクト生成時には必ずtimezone情報を持たせる
 
-            # GMT -> UTC (意味合い的にはほぼ同じ)
-            epoch = ssl.cert_time_to_seconds(target)
+            # unix timestamp文字列を数値に変換
+            epoch = int(target)
 
             # UTC -> local timezone
             tz = cls._get_local_timezone()
@@ -337,6 +326,8 @@ class SSLCertStatus(object):
             tz = datetime.timezone(datetime.timedelta(hours=+9), 'JST')
         elif tz_name == "utc":
             tz = datetime.timezone.utc
+        elif tz_name == "gmt":
+            tz = datetime.timezone(datetime.timedelta(hours=+0), 'GMT')
         else:
             raise Exception("Not supported timezone {0}".format(tz_name))
         return tz
@@ -411,7 +402,7 @@ class SSLCertStatus(object):
 
 class SSLCertExpiryChecker(object):
     """
-
+    GetSSLCertExpiry.shからSSL証明書期日を取得するクラス
     """
     def __init__(self, json_file_path=None):
         if not json_file_path:
