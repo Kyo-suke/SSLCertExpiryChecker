@@ -16,7 +16,7 @@ import traceback
 #----------------------------------------------------------------
 # global config
 #----------------------------------------------------------------
-__VERSION__ = "1.0.0"
+__VERSION__ = "1.1.0"
 BASH = "/usr/bin/bash"
 GET_SSL_CERT_EXPIRY = "GetSSLCertExpiry.sh"
 
