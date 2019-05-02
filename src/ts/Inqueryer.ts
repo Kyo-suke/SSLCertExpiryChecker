@@ -83,6 +83,7 @@ namespace SSLCertChecker {
             }
 
             try {
+                // new Dateとすると環境のタイムゾーンに強制される模様
                 let d = new Date(iso8601str);
                 ret += _paddingStr(d.getFullYear(), "0", 4);
                 ret += "/" + _paddingStr(d.getMonth() + 1, "0", 2);

@@ -309,7 +309,9 @@ class SSLCertStatus(object):
             epoch = int(target)
 
             # UTC -> local timezone
-            tz = cls._get_local_timezone()
+            # pythonのtimezone周りは残念な子なので全てGMTとして返す
+            # 結局確認する人はWebから自身のブラウザ設定に応じたタイムゾーンで確認したい為
+            tz = datetime.timezone(datetime.timedelta(hours=+0), 'GMT')
             ret = datetime.datetime.fromtimestamp(epoch, tz)
         except Exception as e:
             ret = None
