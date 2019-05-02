@@ -39,7 +39,7 @@ namespace SSLCertChecker {
 
         public static initialize(): void {
             jQuery("[data-toggle='tooltip'").tooltip();
-            jQuery("#" + this.CSV_DOWNLOAD_BUTTON_ID).on("click", ()=>{
+            jQuery("#" + this.CSV_DOWNLOAD_BUTTON_ID).on("click", () => {
                 CSVDownloader.download();
             });
             UIManager.initDataTables();
