@@ -57,7 +57,7 @@ namespace SSLCertChecker {
             }
         }
 
-        private static getDateString(iso8601str: string): string {
+        private static _getDateString(iso8601str: string): string {
             if (!iso8601str) {
                 return "-";
             }
@@ -109,8 +109,8 @@ namespace SSLCertChecker {
                 var _temp: SSLCertStatus = {
                     hostname: target.hostname,
                     status: target.status,
-                    sdate: this.getDateString(target.sdate),
-                    edate: this.getDateString(target.edate),
+                    sdate: this._getDateString(target.sdate),
+                    edate: this._getDateString(target.edate),
                     version: target.version
                 };
                 ret.push(_temp);
