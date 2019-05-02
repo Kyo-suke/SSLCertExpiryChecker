@@ -1,6 +1,5 @@
 var SSLCertChecker;
 (function (SSLCertChecker) {
-    SSLCertChecker.TARGET_CGI = "./GetSSLCertStatus.cgi";
     var Inqueryer = (function () {
         function Inqueryer() {
             throw new Error("Inqueryer is static class.");
@@ -45,7 +44,7 @@ var SSLCertChecker;
                 console.error(e.stack);
             }
         };
-        Inqueryer.getDateString = function (iso8601str) {
+        Inqueryer._getDateString = function (iso8601str) {
             if (!iso8601str) {
                 return "-";
             }
@@ -91,8 +90,8 @@ var SSLCertChecker;
                 var _temp = {
                     hostname: target.hostname,
                     status: target.status,
-                    sdate: this.getDateString(target.sdate),
-                    edate: this.getDateString(target.edate),
+                    sdate: this._getDateString(target.sdate),
+                    edate: this._getDateString(target.edate),
                     version: target.version
                 };
                 ret.push(_temp);
@@ -118,10 +117,20 @@ var SSLCertChecker;
         return Inqueryer;
     }());
     SSLCertChecker.Inqueryer = Inqueryer;
+})(SSLCertChecker || (SSLCertChecker = {}));
+var SSLCertChecker;
+(function (SSLCertChecker) {
     var UIManager = (function () {
         function UIManager() {
             throw new Error("Inqueryer is static class.");
         }
+        UIManager.initialize = function () {
+            jQuery("[data-toggle='tooltip'").tooltip();
+            jQuery("#" + this.CSV_DOWNLOAD_BUTTON_ID).on("click", function () {
+                SSLCertChecker.CSVDownloader.download();
+            });
+            UIManager.initDataTables();
+        };
         UIManager.showLoading = function (showed) {
             var loading = jQuery("#" + this.LOADING_ID);
             if (showed) {
@@ -167,6 +176,7 @@ var SSLCertChecker;
         };
         UIManager.TABLE_ID = "ssl-cert-status";
         UIManager.LOADING_ID = "loading";
+        UIManager.CSV_DOWNLOAD_BUTTON_ID = "csv-download-button";
         UIManager.DATATABLES_JP = {
             sProcessing: "処理中...",
             sLengthMenu: "_MENU_ 件表示",
@@ -187,23 +197,173 @@ var SSLCertChecker;
         return UIManager;
     }());
     SSLCertChecker.UIManager = UIManager;
+})(SSLCertChecker || (SSLCertChecker = {}));
+var SSLCertChecker;
+(function (SSLCertChecker) {
+    SSLCertChecker.TARGET_CGI = "./GetSSLCertStatus.cgi";
     function update(json) {
-        UIManager.clearTable();
-        UIManager.showLoading(true);
+        SSLCertChecker.UIManager.clearTable();
+        SSLCertChecker.UIManager.showLoading(true);
         if (!json) {
             return;
         }
-        var datas = Inqueryer.getCertStatusList();
-        UIManager.setTableRow(datas);
+        var datas = SSLCertChecker.Inqueryer.getCertStatusList();
+        SSLCertChecker.UIManager.setTableRow(datas);
     }
     SSLCertChecker.update = update;
     function main() {
-        jQuery("[data-toggle='tooltip'").tooltip();
-        UIManager.initDataTables();
-        Inqueryer.inquery(update);
+        SSLCertChecker.UIManager.initialize();
+        SSLCertChecker.Inqueryer.inquery(update);
     }
     SSLCertChecker.main = main;
     document.addEventListener("DOMContentLoaded", function () {
         SSLCertChecker.main();
     });
+})(SSLCertChecker || (SSLCertChecker = {}));
+var SSLCertChecker;
+(function (SSLCertChecker) {
+    var CSVDownloader = (function () {
+        function CSVDownloader() {
+            throw new Error("Downloader is static class.");
+        }
+        CSVDownloader._makeCSVBlob = function (mimeType, withBOM, lineFeedCodeType) {
+            if (!mimeType) {
+                mimeType = "text/csv";
+            }
+            if (typeof withBOM !== typeof true) {
+                withBOM = true;
+            }
+            if (!lineFeedCodeType) {
+                lineFeedCodeType = "crlf";
+            }
+            try {
+                var certStatusList = SSLCertChecker.Inqueryer.getCertStatusList();
+                var contents = [];
+                if (withBOM) {
+                    contents.push(this.BOM);
+                }
+                var lineFeedCode = this._getLineFeedCode(lineFeedCodeType);
+                var header = ["ホスト名", "証明書状態", "期限開始日", "期限終了日"].join(",");
+                contents.push(header + lineFeedCode);
+                for (var i = 0; i < certStatusList.length; i++) {
+                    var _target = certStatusList[i];
+                    var _temp = [_target.hostname, _target.status, _target.sdate, _target.edate].join(",");
+                    contents.push(_temp + lineFeedCode);
+                }
+                var blob = new Blob(contents, { type: mimeType });
+            }
+            catch (e) {
+                console.error("failed to make blob.");
+                console.error(e.message);
+                console.error(e.stack);
+            }
+            return blob;
+        };
+        CSVDownloader._getLineFeedCode = function (lineFeedCodeType) {
+            var ret = "";
+            switch (lineFeedCodeType) {
+                case "cr":
+                    ret = "\r";
+                    break;
+                case "lf":
+                    ret = "\n";
+                    break;
+                case "crlf":
+                    ret = "\r\n";
+                    break;
+                default:
+                    throw new Error("Invalid linefeed code.");
+            }
+            return ret;
+        };
+        CSVDownloader._getFilename = function (filenameBase) {
+            function _paddingStr(target, paddingChar, length) {
+                var ret = "";
+                try {
+                    var paddingStr = new Array(length + 1).join(paddingChar.slice(0, 1));
+                    ret = (paddingStr + target).slice(-1 * length);
+                }
+                catch (e) {
+                    ret = "" + target;
+                }
+                return ret;
+            }
+            if (!filenameBase) {
+                filenameBase = this.DEFAULT_FILENAME;
+            }
+            var filename = filenameBase;
+            var date = new Date();
+            var d = [_paddingStr(date.getFullYear(), "0", 4),
+                _paddingStr(date.getMonth() + 1, "0", 2),
+                _paddingStr(date.getDate(), "0", 2)].join("");
+            filename = filename.replace("%d", d);
+            var t = [_paddingStr(date.getHours(), "0", 2),
+                _paddingStr(date.getMinutes(), "0", 2),
+                _paddingStr(date.getSeconds(), "0", 2)].join("");
+            filename = filename.replace("%t", t);
+            return filename;
+        };
+        CSVDownloader.download = function (filenameBase, mimeType, withBOM, lineFeedCodeType) {
+            var _this = this;
+            var blob = this._makeCSVBlob(mimeType, withBOM, lineFeedCodeType);
+            var filename = this._getFilename(filenameBase);
+            if (navigator.msSaveBlob) {
+                navigator.msSaveBlob(blob, filename);
+                return;
+            }
+            var url = null;
+            try {
+                var element = this._createLinkElement();
+                url = URL.createObjectURL(blob);
+                this._setAttributes(element, filename, url);
+                element.click();
+                setTimeout(function () {
+                    _this._revoke(url);
+                }, this.REVOKE_TIMEOUT);
+            }
+            catch (e) {
+                console.error("failed to download.");
+                console.error(e.meesage);
+                console.error(e.stack);
+                this._removeLinkElement();
+                if (url) {
+                    this._revoke(url);
+                }
+            }
+        };
+        CSVDownloader._revoke = function (url) {
+            URL.revokeObjectURL(url);
+            this._removeLinkElement();
+        };
+        CSVDownloader._createLinkElement = function () {
+            var element = document.querySelector("#" + this.ELEMENT_ID);
+            if (element) {
+                this._removeLinkElement();
+            }
+            var a = document.createElement("a");
+            a.setAttribute("id", this.ELEMENT_ID);
+            a.setAttribute("download", "");
+            a.setAttribute("target", "_blank");
+            a.setAttribute("href", "");
+            a.setAttribute("style", "display: block; visibility: hidden; width: 0; height: 0;");
+            return document.body.appendChild(a);
+        };
+        CSVDownloader._removeLinkElement = function () {
+            var element = document.querySelector("#" + this.ELEMENT_ID);
+            if (element) {
+                document.body.removeChild(element);
+            }
+        };
+        CSVDownloader._setAttributes = function (element, filename, href) {
+            element.setAttribute("download", filename);
+            element.setAttribute("href", href);
+            return element;
+        };
+        CSVDownloader.ELEMENT_ID = "csv-downloader";
+        CSVDownloader.DEFAULT_FILENAME = "%d_%t.csv";
+        CSVDownloader.REVOKE_TIMEOUT = 5000;
+        CSVDownloader.BOM = new Uint8Array([0xef, 0xbb, 0xbf]);
+        return CSVDownloader;
+    }());
+    SSLCertChecker.CSVDownloader = CSVDownloader;
 })(SSLCertChecker || (SSLCertChecker = {}));
