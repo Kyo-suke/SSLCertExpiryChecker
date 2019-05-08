@@ -19,7 +19,7 @@ IS_END_OPTION=0
 # SSL証明書の有効期限：開始日を標準出力する
 function ssl_cert_start_date(){
     set +eu
-    SSL_CERT_START_STR="`timeout ${TIMEOUT_SEC} openssl s_client -connect ${TARGET_HOST}:${PORT} < /dev/null 2> /dev/null | openssl x509 -text | grep 'Not Before' | grep -oE '[a-zA-Z]{3} +[0-9]{1,2} +[0-9]{2}:[0-9]{2}:[0-9]{2} +[0-9]{4} +[a-zA-Z]{3}'`"
+    SSL_CERT_START_STR="`timeout ${TIMEOUT_SEC} openssl s_client -servername ${TARGET_HOST} -connect ${TARGET_HOST}:${PORT} < /dev/null 2> /dev/null | openssl x509 -text | grep 'Not Before' | grep -oE '[a-zA-Z]{3} +[0-9]{1,2} +[0-9]{2}:[0-9]{2}:[0-9]{2} +[0-9]{4} +[a-zA-Z]{3}'`"
     RET_IS_SUCCESS=$?
     set -eu
 
@@ -38,7 +38,7 @@ function ssl_cert_start_date(){
 # SSL証明書の有効期限：終了日を標準出力する
 function ssl_cert_end_date(){
     set +eu
-    SSL_CERT_END_STR="`timeout ${TIMEOUT_SEC} openssl s_client -connect ${TARGET_HOST}:${PORT} < /dev/null 2> /dev/null | openssl x509 -text | grep 'Not After' | grep -oE '[a-zA-Z]{3} +[0-9]{1,2} +[0-9]{2}:[0-9]{2}:[0-9]{2} +[0-9]{4} +[a-zA-Z]{3}'`"
+    SSL_CERT_END_STR="`timeout ${TIMEOUT_SEC} openssl s_client -servername ${TARGET_HOST} -connect ${TARGET_HOST}:${PORT} < /dev/null 2> /dev/null | openssl x509 -text | grep 'Not After' | grep -oE '[a-zA-Z]{3} +[0-9]{1,2} +[0-9]{2}:[0-9]{2}:[0-9]{2} +[0-9]{4} +[a-zA-Z]{3}'`"
     RET_IS_SUCCESS=$?
     set -eu
 
