@@ -341,6 +341,10 @@ class SSLCertStatus(object):
         """
         cls = SSLCertStatus
         try:
+            # 不明の場合
+            if self._is_unknown():
+                self._status = cls.UNKNOWN
+                return
             # 有効期限切れの場合
             if not self._is_valid(0):
                 self._status = cls.EXPIRED
@@ -373,6 +377,19 @@ class SSLCertStatus(object):
             tz = cls._get_local_timezone()
             now = datetime.datetime.now(tz=tz)
             ret = self._edate > (now + datetime.timedelta(days=days))
+        except Exception as e:
+            sys.stderr.write(traceback.format_exc())
+            raise e
+        return ret
+
+    def _is_unknown(self):
+        """
+        SSL証明書の期限が不明なものかを返す
+        @return {boolean}
+        """
+        ret = False
+        try:
+            ret = (not self.sdate) or (not self.edate)
         except Exception as e:
             sys.stderr.write(traceback.format_exc())
             raise e
