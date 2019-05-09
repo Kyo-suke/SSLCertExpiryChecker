@@ -96,6 +96,9 @@ var SSLCertChecker;
                 };
                 ret.push(_temp);
             }
+            ret.sort(function (a, b) {
+                return a.hostname > b.hostname ? 1 : -1;
+            });
             return ret;
         };
         Object.defineProperty(Inqueryer, "data", {
