@@ -52,6 +52,21 @@ button#reload-button {
     margin-bottom: 0.5em;
 }
 
+div#hint-tooltip {
+    display: inline-block;
+    top: 0.7em;
+    right: 1.7em;
+
+    width: 1.25em;
+    height: 1.25em;
+    padding: 0;
+    color: #ffffff;
+    font-weight: normal;
+    line-height: 1.25em;
+    border-radius: 1em;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
 div#loading {
     position: fixed;
     display: flex;
