@@ -125,11 +125,22 @@ var SSLCertChecker;
             throw new Error("Inqueryer is static class.");
         }
         UIManager.initialize = function () {
+            this.unbind();
+            this.bind();
             jQuery("[data-toggle='tooltip'").tooltip();
+            this.initDataTables();
+        };
+        UIManager.bind = function () {
             jQuery("#" + this.CSV_DOWNLOAD_BUTTON_ID).on("click", function () {
                 SSLCertChecker.CSVDownloader.download();
             });
-            UIManager.initDataTables();
+            jQuery("#" + this.RELOAD_BUTTON_ID).on("click", function () {
+                window.location.reload();
+            });
+        };
+        UIManager.unbind = function () {
+            jQuery("#" + this.CSV_DOWNLOAD_BUTTON_ID).off();
+            jQuery("#" + this.RELOAD_BUTTON_ID).off();
         };
         UIManager.showLoading = function (showed) {
             var loading = jQuery("#" + this.LOADING_ID);
@@ -177,6 +188,7 @@ var SSLCertChecker;
         UIManager.TABLE_ID = "ssl-cert-status";
         UIManager.LOADING_ID = "loading";
         UIManager.CSV_DOWNLOAD_BUTTON_ID = "csv-download-button";
+        UIManager.RELOAD_BUTTON_ID = "reload-button";
         UIManager.DATATABLES_JP = {
             sProcessing: "処理中...",
             sLengthMenu: "_MENU_ 件表示",
