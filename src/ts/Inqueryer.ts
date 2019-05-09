@@ -116,6 +116,12 @@ namespace SSLCertChecker {
                 };
                 ret.push(_temp);
             }
+            // ホスト名昇順にソート
+            ret.sort(
+                (a: SSLCertStatus, b: SSLCertStatus): number => {
+                    return a.hostname > b.hostname ? 1 : -1;
+                }
+            );
             return ret;
         }
 
