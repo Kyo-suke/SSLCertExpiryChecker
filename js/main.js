@@ -160,7 +160,17 @@ var SSLCertChecker;
             var table = jQuery("#" + this.TABLE_ID);
             table.DataTable({
                 data: datas,
-                columns: [{ data: "hostname" }, { data: "status" }, { data: "sdate" }, { data: "edate" }],
+                columns: [
+                    {
+                        data: "hostname",
+                        render: function (data) {
+                            return '<a href="https://' + data + '" target="_blank">' + data + "</a>";
+                        }
+                    },
+                    { data: "status" },
+                    { data: "sdate" },
+                    { data: "edate" }
+                ],
                 scrollCollapse: true,
                 pageLength: 50,
                 rowCallback: function (row, data) {

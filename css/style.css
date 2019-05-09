@@ -221,6 +221,10 @@ button#reload-button {
     margin-bottom: 0.5em;
 }
 
+span#hint-tooltip {
+    border: 1px solid #333333;
+}
+
 div#loading {
     position: fixed;
     display: flex;
