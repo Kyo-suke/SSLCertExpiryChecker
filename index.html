@@ -21,7 +21,10 @@
         SSL証明書の期限一覧を確認するツールです。<br>
         表示される期限はお使いのシステムのタイムゾーン設定に合わせたものとなります。
     </p>
-    <button id="csv-download-button">CSVをダウンロード</button>
+    <div>
+        <button id="csv-download-button">CSVをダウンロード</button>
+        <button id="reload-button">再読み込み</button>
+    </div>
     <table id="ssl-cert-status" class="table table-bordered" data-url="./GetSSLCertStatus.cgi" style="width: 100%;">
         <thead class="thead-light">
             <tr>

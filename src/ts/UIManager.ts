@@ -14,6 +14,7 @@ namespace SSLCertChecker {
         private static TABLE_ID: string = "ssl-cert-status";
         private static LOADING_ID: string = "loading";
         private static CSV_DOWNLOAD_BUTTON_ID: string = "csv-download-button";
+        private static RELOAD_BUTTON_ID: string = "reload-button";
 
         private static DATATABLES_JP = {
             sProcessing: "処理中...",
@@ -38,11 +39,24 @@ namespace SSLCertChecker {
         }
 
         public static initialize(): void {
+            this.unbind();
+            this.bind();
             jQuery("[data-toggle='tooltip'").tooltip();
+            this.initDataTables();
+        }
+
+        private static bind(): void {
             jQuery("#" + this.CSV_DOWNLOAD_BUTTON_ID).on("click", () => {
                 CSVDownloader.download();
             });
-            UIManager.initDataTables();
+            jQuery("#" + this.RELOAD_BUTTON_ID).on("click", () => {
+                window.location.reload();
+            });
+        }
+
+        private static unbind(): void {
+            jQuery("#" + this.CSV_DOWNLOAD_BUTTON_ID).off();
+            jQuery("#" + this.RELOAD_BUTTON_ID).off();
         }
 
         public static showLoading(showed: boolean): void {
